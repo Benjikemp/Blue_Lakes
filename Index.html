@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blue Lakes Mapping</title>
+    <style>
+        #map {
+            height: 400px;
+            margin: 0 auto; /* Center the map horizontally */
+        }
+        .header {
+            text-align: center; /* Center align the title and logo */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="Blue_Lakes_Logo.png" alt="Blue Lakes Logo" width="200"><br>
+        <h1>Blue Lakes Mapping</h1>
+    </div>
+    <div id="map"></div>
+    <script src="leaflet/leaflet.js"></script>
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
+    <script src="https://unpkg.com/leaflet-ajax@2.1.0/dist/leaflet.ajax.min.js"></script>
+    <script>
+        var map = L.map('map').setView([0, 0], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        var geojsonLayer = L.geoJSON.ajax("Blue_Lakes_All.geojson", {
+            style: {
+                fillColor: 'blue',
+                color: 'blue',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.7,
+            },
+        }).addTo(map);
+    </script>
+</body>
+</html>
