@@ -10,38 +10,30 @@
         body {
             text-align: center; /* Center align the title */
         }
-        #logo {
-            display: block;
-            margin: 0 auto;
+        #header {
+            padding: 20px;
+        }
+        #header img {
+            max-width: 200px;
         }
     </style>
 </head>
 <body>
-    <img id="logo" src="Blue_Lakes/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
-    <h1>Blue Lakes Mapping</h1>
+    <div id="header">
+        <img src="Blue_Lakes/Blue_Lakes_Logo.png" alt="Blue Lakes Logo" />
+        <h1>Blue Lakes Mapping</h1>
+    </div>
     <div id="map"></div>
-    <script src="leaflet/leaflet.js"></script>
-    <link rel="stylesheet" href="leaflet/leaflet.css" />
+    <script src="Blue_Lakes/leaflet/leaflet.js"></script>
+    <link rel="stylesheet" href="Blue_Lakes/leaflet/leaflet.css" />
     <script src="https://unpkg.com/leaflet-ajax@2.1.0/dist/leaflet.ajax.min.js"></script>
     <script>
         var map = L.map('map').setView([0, 0], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        function onEachFeature(feature, layer) {
-            if (feature.properties) {
-                var popupContent = "<h3>Feature Attributes</h3>";
-                for (var property in feature.properties) {
-                    if (feature.properties.hasOwnProperty(property)) {
-                        popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] + "<br>";
-                    }
-                }
-                layer.bindPopup(popupContent);
-            }
-        }
+        // Your map configuration code here
 
-        var geojsonLayer = L.geoJSON.ajax("Blue_Lakes/Blue_Lakes_All.geojson", {
-            onEachFeature: onEachFeature,
-        }).addTo(map);
+        L.geoJSON.ajax("Blue_Lakes/Blue_Lakes_All.geojson").addTo(map);
     </script>
 </body>
 </html>
