@@ -39,9 +39,11 @@
             }
         }
 
-        var geojsonLayer = L.geoJSON.ajax("Blue_Lakes/Blue_Lakes_All.geojson", {
+        var geojsonLayer = new L.GeoJSON.AJAX("Blue_Lakes/Blue_Lakes_All.geojson", {
             onEachFeature: onEachFeature,
-        }).addTo(map);
+        });
+
+        geojsonLayer.addTo(map);
     </script>
 </body>
 </html>
