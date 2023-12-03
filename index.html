@@ -3,28 +3,26 @@
 <head>
     <title>Blue Lakes Mapping</title>
     <style>
-        #map {
-            height: 400px;
-            margin: 0 auto; /* Center the map horizontally */
-        }
-        body {
-            text-align: center; /* Center align the title */
+        #container {
+            text-align: center;
         }
         #logo {
             display: block;
             margin: 0 auto;
             width: 25%; /* Adjust the width as needed */
-            position: absolute;
-            top: 10px; /* Adjust the top position as needed */
-            left: 0;
-            right: 0;
+        }
+        #map {
+            height: 400px;
+            margin: 10px auto; /* Center the map horizontally and add margin at the top */
         }
     </style>
 </head>
 <body>
-    <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
-    <h1>Blue Lakes Mapping</h1>
-    <div id="map"></div>
+    <div id="container">
+        <h1>Blue Lakes Mapping</h1>
+        <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
+        <div id="map"></div>
+    </div>
     <script src="leaflet/leaflet.js"></script>
     <link rel="stylesheet" href="leaflet/leaflet.css" />
     <script src="https://unpkg.com/leaflet-ajax@2.1.0/dist/leaflet.ajax.min.js"></script>
