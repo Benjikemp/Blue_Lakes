@@ -4,27 +4,31 @@
     <title>Blue Lakes Mapping</title>
     <style>
         body {
-            margin: 0; /* Remove default body margin */
-            padding: 0; /* Remove default body padding */
+            margin: 0;
+            padding: 0;
             text-align: center;
-            background-color: #ffffff; /* Set a white background color */
+            background-color: #ffffff;
         }
         #container {
-            padding: 10px; /* Add padding to the container */
-            background-color: #ffffff; /* Set a white background color */
+            padding: 10px;
+            background-color: #ffffff;
             display: inline-block;
         }
         h1 {
-            margin: 0; /* Remove margin for h1 */
+            margin: 0;
         }
         #logo {
             display: block;
             margin: 0 auto;
-            width: 25%; /* Adjust the width as needed */
+            width: 25%;
         }
         #map {
             height: 400px;
-            margin: 10px auto; /* Center the map horizontally and add margin at the top */
+            margin: 10px auto;
+        }
+        #lakeImage {
+            width: 50%; /* Adjust the width as needed */
+            margin: 20px;
         }
     </style>
 </head>
@@ -33,6 +37,7 @@
         <h1>Blue Lakes Mapping</h1>
         <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
         <div id="map"></div>
+        <img id="lakeImage" src="https://raw.githack.com/Benjikemp/Blue_Lakes/main/Kawagama%20Lake_phosphorus_graph%20copy_page-0001.jpg" alt="Kawagama Lake Image">
     </div>
     <script src="leaflet/leaflet.js"></script>
     <link rel="stylesheet" href="leaflet/leaflet.css" />
@@ -50,10 +55,8 @@
                     }
                 }
 
-                // Encode the lake name for use in the URL
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
                 var pdfLink = "https://raw.githubusercontent.com/Benjikemp/Pdf_Phos_Split1/" + encodedLakeName + "_phosphorus_graph%20copy.pdf";
-                
                 popupContent += '<a href="' + pdfLink + '" target="_blank">Open PDF</a>';
 
                 layer.bindPopup(popupContent);
