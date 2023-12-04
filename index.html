@@ -26,10 +26,6 @@
             height: 400px;
             margin: 10px auto;
         }
-        #lakeImage {
-            width: 50%; /* Adjust the width as needed */
-            margin: 20px;
-        }
     </style>
 </head>
 <body>
@@ -37,7 +33,6 @@
         <h1>Blue Lakes Mapping</h1>
         <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
         <div id="map"></div>
-        <img id="lakeImage" src="https://raw.githack.com/Benjikemp/Blue_Lakes/main/Kawagama%20Lake_phosphorus_graph%20copy_page-0001.jpg" alt="Kawagama Lake Image">
     </div>
     <script src="leaflet/leaflet.js"></script>
     <link rel="stylesheet" href="leaflet/leaflet.css" />
@@ -56,8 +51,12 @@
                 }
 
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
-                var pdfLink = "https://raw.githubusercontent.com/Benjikemp/Pdf_Phos_Split1/" + encodedLakeName + "_phosphorus_graph%20copy.pdf";
-                popupContent += '<a href="' + pdfLink + '" target="_blank">Open PDF</a>';
+                
+                // Assume the JPG files are in the folder Blue_Lakes/DO_1 in the main branch
+                var jpgFolder = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_1/";
+                var jpgLink = jpgFolder + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                
+                popupContent += '<a href="' + jpgLink + '" target="_blank">Open JPG</a>';
 
                 layer.bindPopup(popupContent);
             }
@@ -71,6 +70,7 @@
     </script>
 </body>
 </html>
+
 
 
 
