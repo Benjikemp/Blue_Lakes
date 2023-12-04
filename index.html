@@ -52,11 +52,24 @@
 
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
                 
-                // Assume the JPG files are in the folder Blue_Lakes/DO_1 in the main branch
-                var jpgFolder = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_1/";
-                var jpgLink = jpgFolder + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                // Assume the JPG files are in the folders Blue_Lakes/DO_1 and Blue_Lakes/DO_2 in the main branch
+                var jpgFolder1 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_1/";
+                var jpgFolder2 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_2/";
+
+                // Check if the file exists in DO_1
+                var jpgLink = jpgFolder1 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                var jpgRequest = new XMLHttpRequest();
+                jpgRequest.open('HEAD', jpgLink, false);
+                jpgRequest.send();
                 
-                popupContent += '<a href="' + jpgLink + '" target="_blank">Open JPG</a>';
+                if (jpgRequest.status !== 404) {
+                    // File exists in DO_1
+                    popupContent += '<a href="' + jpgLink + '" target="_blank">Open JPG (DO_1)</a>';
+                } else {
+                    // File does not exist in DO_1, check DO_2
+                    jpgLink = jpgFolder2 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                    popupContent += '<a href="' + jpgLink + '" target="_blank">Open JPG (DO_2)</a>';
+                }
 
                 layer.bindPopup(popupContent);
             }
@@ -70,6 +83,7 @@
     </script>
 </body>
 </html>
+
 
 
 
