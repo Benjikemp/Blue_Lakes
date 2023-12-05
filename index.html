@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Blue Lakes Mapping</title>
     <style>
@@ -10,35 +9,29 @@
             text-align: center;
             background-color: #ffffff;
         }
-
         #container {
             padding: 10px;
             background-color: #ffffff;
             display: inline-block;
         }
-
         h1 {
             margin: 0;
         }
-
         #logo {
             display: block;
             margin: 0 auto;
             width: 25%;
         }
-
         #map {
             height: 400px;
             margin: 10px auto;
         }
     </style>
 </head>
-
 <body>
     <div id="container">
         <h1>Blue Lakes Mapping</h1>
-        <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png"
-            alt="Blue Lakes Logo">
+        <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
         <div id="map"></div>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -54,8 +47,7 @@
                     var popupContent = "<h3>Feature Attributes</h3>";
                     for (var property in feature.properties) {
                         if (feature.properties.hasOwnProperty(property)) {
-                            popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] +
-                                "<br>";
+                            popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] + "<br>";
                         }
                     }
 
@@ -80,6 +72,7 @@
 
                     // Check for existing files in the JPG folders
                     var links = [];
+                    var linkNames = ["DO Graph", "DO Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Temperature Graph", "Temperature Graph", "Temperature Graph"];
                     for (var i = 0; i < jpgFolders.length; i++) {
                         var fileType = i < 10 ? "dissolved_oxygen" : (i < 20 ? "phosphorus" : "temperature");
                         var link = jpgFolders[i] + encodedLakeName + "_" + fileType + "_graph.jpg";
@@ -89,9 +82,7 @@
 
                         if (request.status !== 404) {
                             // File exists in the current folder
-                            var label = fileType === "dissolved_oxygen" ? "DO Graph" :
-                                (fileType === "phosphorus" ? "Phosphorus Graph" : "Temperature Graph");
-                            links.push('<a href="' + link + '" target="_blank">' + label + '</a>');
+                            links.push('<a href="' + link + '" target="_blank">' + linkNames[i] + '</a>');
                         }
                     }
 
@@ -109,7 +100,6 @@
         });
     </script>
 </body>
-
 </html>
 
 
