@@ -34,70 +34,83 @@
         <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
         <div id="map"></div>
     </div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="leaflet/leaflet.js"></script>
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
     <script src="https://unpkg.com/leaflet-ajax@2.1.0/dist/leaflet.ajax.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var map = L.map('map').setView([0, 0], 10);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        var map = L.map('map').setView([0, 0], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-            function onEachFeature(feature, layer) {
-                if (feature.properties) {
-                    var popupContent = "<h3>Feature Attributes</h3>";
-                    for (var property in feature.properties) {
-                        if (feature.properties.hasOwnProperty(property)) {
-                            popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] + "<br>";
-                        }
+        function onEachFeature(feature, layer) {
+            if (feature.properties) {
+                var popupContent = "<h3>Feature Attributes</h3>";
+                for (var property in feature.properties) {
+                    if (feature.properties.hasOwnProperty(property)) {
+                        popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] + "<br>";
                     }
-
-                    var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
-
-                    // JPG folders for DO, Phosphorus, and Temperature
-                    var jpgFolders = [
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_1/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_2/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_1/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_2/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_3/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_4/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_5/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_6/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_7/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_8/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_1/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_2/",
-                        "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_3/"
-                    ];
-
-                    // Check for existing files in the JPG folders
-                    var links = [];
-                    var linkNames = ["DO Graph", "DO Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Phosphorus Graph", "Temperature Graph", "Temperature Graph", "Temperature Graph"];
-                    for (var i = 0; i < jpgFolders.length; i++) {
-                        var fileType = i < 10 ? "dissolved_oxygen" : (i < 20 ? "phosphorus" : "temperature");
-                        var link = jpgFolders[i] + encodedLakeName + "_" + fileType + "_graph.jpg";
-                        var request = new XMLHttpRequest();
-                        request.open('HEAD', link, false);
-                        request.send();
-
-                        if (request.status !== 404) {
-                            // File exists in the current folder
-                            links.push('<a href="' + link + '" target="_blank">' + linkNames[i] + '</a>');
-                        }
-                    }
-
-                    popupContent += links.join(" ");
-
-                    layer.bindPopup(popupContent);
                 }
+
+                var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
+                
+                // Assume the JPG files are in the folders Blue_Lakes/DO_1 and Blue_Lakes/DO_2 in the main branch
+                var jpgFolder1 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_1/";
+                var jpgFolder2 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_2/";
+
+                // Check if the file exists in DO_1
+                var jpgLinkDO = jpgFolder1 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                var jpgRequestDO = new XMLHttpRequest();
+                jpgRequestDO.open('HEAD', jpgLinkDO, false);
+                jpgRequestDO.send();
+                
+                if (jpgRequestDO.status !== 404) {
+                    // File exists in DO_1
+                    popupContent += '<a href="' + jpgLinkDO + '" target="_blank">Open JPG (DO_1)</a>';
+                } else {
+                    // File does not exist in DO_1, check DO_2
+                    jpgLinkDO = jpgFolder2 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                    popupContent += '<a href="' + jpgLinkDO + '" target="_blank">Open JPG (DO_2)</a>';
+                }
+
+                // Assume the JPG files are in the folders Blue_Lakes/Temperature_1, Temperature_2, and Temperature_3 in the main branch
+                var jpgFolderTemp1 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_1/";
+                var jpgFolderTemp2 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_2/";
+                var jpgFolderTemp3 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_3/";
+
+                // Check if the file exists in Temperature_1
+                var jpgLinkTemp = jpgFolderTemp1 + encodedLakeName + "_temperature_graph.jpg";
+                var jpgRequestTemp = new XMLHttpRequest();
+                jpgRequestTemp.open('HEAD', jpgLinkTemp, false);
+                jpgRequestTemp.send();
+                
+                if (jpgRequestTemp.status !== 404) {
+                    // File exists in Temperature_1
+                    popupContent += '<a href="' + jpgLinkTemp + '" target="_blank">Open JPG (Temperature_1)</a>';
+                } else {
+                    // File does not exist in Temperature_1, check Temperature_2
+                    jpgLinkTemp = jpgFolderTemp2 + encodedLakeName + "_temperature_graph.jpg";
+                    var jpgRequestTemp2 = new XMLHttpRequest();
+                    jpgRequestTemp2.open('HEAD', jpgLinkTemp, false);
+                    jpgRequestTemp2.send();
+
+                    if (jpgRequestTemp2.status !== 404) {
+                        // File exists in Temperature_2
+                        popupContent += '<a href="' + jpgLinkTemp + '" target="_blank">Open JPG (Temperature_2)</a>';
+                    } else {
+                        // File does not exist in Temperature_2, check Temperature_3
+                        jpgLinkTemp = jpgFolderTemp3 + encodedLakeName + "_temperature_graph.jpg";
+                        popupContent += '<a href="' + jpgLinkTemp + '" target="_blank">Open JPG (Temperature_3)</a>';
+                    }
+                }
+
+                layer.bindPopup(popupContent);
             }
+        }
 
-            var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
-                onEachFeature: onEachFeature,
-            });
-
-            geojsonLayer.addTo(map);
+        var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
+            onEachFeature: onEachFeature,
         });
+
+        geojsonLayer.addTo(map);
     </script>
 </body>
 </html>
