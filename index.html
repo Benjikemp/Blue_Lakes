@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Lake Report Card</title>
+    <title>Blue Lakes Mapping</title>
     <style>
         body {
             margin: 0;
@@ -27,55 +27,84 @@
             width: 25%;
         }
 
-        #graphs {
-            margin: 20px auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-evenly;
-        }
-
-        .graph {
-            margin: 10px;
-            text-align: center;
+        #map {
+            height: 400px;
+            margin: 10px auto;
         }
     </style>
 </head>
 
 <body>
     <div id="container">
-        <h1>Lake Report Card</h1>
+        <h1>Blue Lakes Mapping</h1>
         <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png"
             alt="Blue Lakes Logo">
-        <div id="graphs"></div>
+        <div id="map"></div>
     </div>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="leaflet/leaflet.js"></script>
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
+    <script src="https://unpkg.com/leaflet-ajax@2.1.0/dist/leaflet.ajax.min.js"></script>
     <script>
-        // Parse the lake name from the query parameter
-        var urlParams = new URLSearchParams(window.location.search);
-        var lakeName = urlParams.get('lake');
+        var map = L.map('map').setView([0, 0], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        // Temperature graphs
-        var temperatureLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_1/" + lakeName + "_temperature_graph.jpg";
-        var temperatureImg = document.createElement("img");
-        temperatureImg.src = temperatureLink;
-        temperatureImg.classList.add("graph");
-        document.getElementById("graphs").appendChild(temperatureImg);
+        function onEachFeature(feature, layer) {
+            if (feature.properties) {
+                var popupContent = "<h3>Feature Attributes</h3>";
+                for (var property in feature.properties) {
+                    if (feature.properties.hasOwnProperty(property)) {
+                        popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] +
+                            "<br>";
+                    }
+                }
 
-        // Dissolved Oxygen graphs
-        var doLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_1/" + lakeName + "_dissolved_oxygen_graph.jpg";
-        var doImg = document.createElement("img");
-        doImg.src = doLink;
-        doImg.classList.add("graph");
-        document.getElementById("graphs").appendChild(doImg);
+                var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
-        // Phosphorus graphs
-        for (var i = 1; i <= 8; i++) {
-            var phosphorusLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_" + i + "/" + lakeName + "_phosphorus_graph.jpg";
-            var phosphorusImg = document.createElement("img");
-            phosphorusImg.src = phosphorusLink;
-            phosphorusImg.classList.add("graph");
-            document.getElementById("graphs").appendChild(phosphorusImg);
+                // JPG folders for DO, Phosphorus, and Temperature
+                var jpgFolders = [
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_1/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_2/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_1/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_2/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_3/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_4/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_5/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_6/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_7/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Phosphorus_8/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_1/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_2/",
+                    "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_3/"
+                ];
+
+                // Check for existing files in the JPG folders
+                var links = [];
+                for (var i = 0; i < jpgFolders.length; i++) {
+                    var fileType = i < 10 ? "dissolved_oxygen" : (i < 20 ? "phosphorus" : "temperature");
+                    var link = jpgFolders[i] + encodedLakeName + "_" + fileType + "_graph.jpg";
+                    var request = new XMLHttpRequest();
+                    request.open('HEAD', link, false);
+                    request.send();
+
+                    if (request.status !== 404) {
+                        // File exists in the current folder
+                        var label = fileType === "dissolved_oxygen" ? "DO Graph" :
+                            (fileType === "phosphorus" ? "Phosphorus Graph" : "Temperature Graph");
+                        links.push('<a href="' + link + '" target="_blank">' + label + '</a>');
+                    }
+                }
+
+                popupContent += links.join(" ");
+
+                layer.bindPopup(popupContent);
+            }
         }
+
+        var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
+            onEachFeature: onEachFeature,
+        });
+
+        geojsonLayer.addTo(map);
     </script>
 </body>
 
