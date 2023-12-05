@@ -57,49 +57,18 @@
                 var jpgFolder2 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_2/";
 
                 // Check if the file exists in DO_1
-                var jpgLinkDO = jpgFolder1 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
-                var jpgRequestDO = new XMLHttpRequest();
-                jpgRequestDO.open('HEAD', jpgLinkDO, false);
-                jpgRequestDO.send();
+                var jpgLink = jpgFolder1 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                var jpgRequest = new XMLHttpRequest();
+                jpgRequest.open('HEAD', jpgLink, false);
+                jpgRequest.send();
                 
-                if (jpgRequestDO.status !== 404) {
+                if (jpgRequest.status !== 404) {
                     // File exists in DO_1
-                    popupContent += '<a href="' + jpgLinkDO + '" target="_blank">Open JPG (DO_1)</a>';
+                    popupContent += '<a href="' + jpgLink + '" target="_blank">Open JPG (DO_1)</a>';
                 } else {
                     // File does not exist in DO_1, check DO_2
-                    jpgLinkDO = jpgFolder2 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
-                    popupContent += '<a href="' + jpgLinkDO + '" target="_blank">Open JPG (DO_2)</a>';
-                }
-
-                // Assume the JPG files are in the folders Blue_Lakes/Temperature_1, Temperature_2, and Temperature_3 in the main branch
-                var jpgFolderTemp1 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_1/";
-                var jpgFolderTemp2 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_2/";
-                var jpgFolderTemp3 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Temperature_3/";
-
-                // Check if the file exists in Temperature_1
-                var jpgLinkTemp = jpgFolderTemp1 + encodedLakeName + "_temperature_graph.jpg";
-                var jpgRequestTemp = new XMLHttpRequest();
-                jpgRequestTemp.open('HEAD', jpgLinkTemp, false);
-                jpgRequestTemp.send();
-                
-                if (jpgRequestTemp.status !== 404) {
-                    // File exists in Temperature_1
-                    popupContent += '<a href="' + jpgLinkTemp + '" target="_blank">Open JPG (Temperature_1)</a>';
-                } else {
-                    // File does not exist in Temperature_1, check Temperature_2
-                    jpgLinkTemp = jpgFolderTemp2 + encodedLakeName + "_temperature_graph.jpg";
-                    var jpgRequestTemp2 = new XMLHttpRequest();
-                    jpgRequestTemp2.open('HEAD', jpgLinkTemp, false);
-                    jpgRequestTemp2.send();
-
-                    if (jpgRequestTemp2.status !== 404) {
-                        // File exists in Temperature_2
-                        popupContent += '<a href="' + jpgLinkTemp + '" target="_blank">Open JPG (Temperature_2)</a>';
-                    } else {
-                        // File does not exist in Temperature_2, check Temperature_3
-                        jpgLinkTemp = jpgFolderTemp3 + encodedLakeName + "_temperature_graph.jpg";
-                        popupContent += '<a href="' + jpgLinkTemp + '" target="_blank">Open JPG (Temperature_3)</a>';
-                    }
+                    jpgLink = jpgFolder2 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                    popupContent += '<a href="' + jpgLink + '" target="_blank">Open JPG (DO_2)</a>';
                 }
 
                 layer.bindPopup(popupContent);
@@ -114,6 +83,9 @@
     </script>
 </body>
 </html>
+
+
+
 
 
 
