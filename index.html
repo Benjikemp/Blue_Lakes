@@ -64,11 +64,13 @@
                 
                 if (jpgRequest.status !== 404) {
                     // File exists in DO_1
-                    popupContent += '<a href="' + jpgLink + '" target="_blank">Open JPG (DO_1)</a>';
+                    popupContent += '<a href="' + jpgLink + '" target="_blank">Lake Report Card</a>';
+
                 } else {
                     // File does not exist in DO_1, check DO_2
                     jpgLink = jpgFolder2 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
-                    popupContent += '<a href="' + jpgLink + '" target="_blank">Open JPG (DO_2)</a>';
+                    popupContent += '<a href="' + jpgLink + '" target="_blank">Lake Report Card</a>';
+
                 }
 
                 layer.bindPopup(popupContent);
