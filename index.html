@@ -51,26 +51,51 @@
                 }
 
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
-                
-                // Assume the JPG files are in the folders Blue_Lakes/DO_1 and Blue_Lakes/DO_2 in the main branch
-                var jpgFolder1 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_1/";
-                var jpgFolder2 = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/DO_2/";
 
-                // Check if the file exists in DO_1
-                var jpgLink = jpgFolder1 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
-                var jpgRequest = new XMLHttpRequest();
-                jpgRequest.open('HEAD', jpgLink, false);
-                jpgRequest.send();
-                
-                if (jpgRequest.status !== 404) {
-                    // File exists in DO_1
-                    popupContent += '<a href="' + jpgLink + '" target="_blank">Lake Report Card</a>';
+                // Temperature folders
+                var temperatureFolders = ["Temperature_1", "Temperature_2", "Temperature_3"];
 
-                } else {
-                    // File does not exist in DO_1, check DO_2
-                    jpgLink = jpgFolder2 + encodedLakeName + "_dissolved_oxygen_graph.jpg";
-                    popupContent += '<a href="' + jpgLink + '" target="_blank">Lake Report Card</a>';
+                // Check if the file exists in Temperature folders
+                var temperatureLink = null;
+                for (var i = 0; i < temperatureFolders.length; i++) {
+                    temperatureLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + temperatureFolders[i] + "/" + encodedLakeName + "_temperature_graph.jpg";
+                    var temperatureRequest = new XMLHttpRequest();
+                    temperatureRequest.open('HEAD', temperatureLink, false);
+                    temperatureRequest.send();
 
+                    if (temperatureRequest.status !== 404) {
+                        // File exists in the current Temperature folder
+                        popupContent += '<a href="' + temperatureLink + '" target="_blank">Temperature Graph</a>';
+                        break;
+                    }
+                }
+
+                // If no temperature graph was found, you can display a message
+                if (temperatureRequest.status === 404) {
+                    popupContent += '<p>No temperature graph available</p>';
+                }
+
+                // Dissolved oxygen folders
+                var doFolders = ["DO_1", "DO_2"];
+
+                // Check if the file exists in Dissolved Oxygen folders
+                var doLink = null;
+                for (var j = 0; j < doFolders.length; j++) {
+                    doLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + doFolders[j] + "/" + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                    var doRequest = new XMLHttpRequest();
+                    doRequest.open('HEAD', doLink, false);
+                    doRequest.send();
+
+                    if (doRequest.status !== 404) {
+                        // File exists in the current Dissolved Oxygen folder
+                        popupContent += '<a href="' + doLink + '" target="_blank">Lake Report Card</a>';
+                        break;
+                    }
+                }
+
+                // If no dissolved oxygen graph was found, you can display a message
+                if (doRequest.status === 404) {
+                    popupContent += '<p>No dissolved oxygen graph available</p>';
                 }
 
                 layer.bindPopup(popupContent);
