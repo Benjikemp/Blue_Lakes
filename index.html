@@ -86,25 +86,31 @@
 
         function generateGraphLinks(folders, encodedLakeName, graphType) {
             var graphLinks = "";
+            var promises = [];
+
             for (var i = 0; i < folders.length; i++) {
                 var graphLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" +
                     encodedLakeName + "_" + folders[i].toLowerCase() + "_graph.jpg";
-                var graphRequest = new XMLHttpRequest();
-                graphRequest.open('HEAD', graphLink, false);
-                graphRequest.send();
 
-                if (graphRequest.status !== 404) {
-                    // File exists in the current folder
-                    graphLinks += '<a href="' + graphLink + '" target="_blank">' + graphType + ' ' + (i + 1) + '</a> ';
-                }
+                promises.push(
+                    fetch(graphLink, { method: 'HEAD' })
+                        .then(response => {
+                            if (response.ok) {
+                                // File exists in the current folder
+                                graphLinks += '<a href="' + graphLink + '" target="_blank">' + graphType + ' ' + (i + 1) + '</a> ';
+                            }
+                        })
+                );
             }
 
-            // If no graph was found, display a message
-            if (graphLinks === "") {
-                graphLinks = '<p>No ' + graphType.toLowerCase() + ' available</p>';
-            }
-
-            return graphLinks;
+            return Promise.all(promises)
+                .then(() => {
+                    // If no graph was found, display a message
+                    if (graphLinks === "") {
+                        graphLinks = '<p>No ' + graphType.toLowerCase() + ' available</p>';
+                    }
+                    return graphLinks;
+                });
         }
 
         var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
@@ -116,7 +122,6 @@
 </body>
 
 </html>
-
 
 
 
