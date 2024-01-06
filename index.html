@@ -63,29 +63,40 @@
                 var temperatureFolders = ["Temp1", "Temp2", "Temp3", "Temp4", "Temp5", "Temp6"];
 
                 // Add Temperature Graph links
-                popupContent += generateGraphLinks(temperatureFolders, encodedLakeName, "Temperature Graph");
+                generateGraphLinks(temperatureFolders, encodedLakeName, "Temperature Graph")
+                    .then(temperatureLinks => {
+                        popupContent += temperatureLinks;
 
-                // Dissolved oxygen folders
-                var doFolders = ["DO1", "DO2", "DO3", "DO4", "DO5", "DO6"];
+                        // Dissolved oxygen folders
+                        var doFolders = ["DO1", "DO2", "DO3", "DO4", "DO5", "DO6"];
 
-                // Add Dissolved Oxygen Graph links
-                popupContent += generateGraphLinks(doFolders, encodedLakeName, "Dissolved Oxygen Graph");
+                        // Add Dissolved Oxygen Graph links
+                        return generateGraphLinks(doFolders, encodedLakeName, "Dissolved Oxygen Graph");
+                    })
+                    .then(doLinks => {
+                        popupContent += doLinks;
 
-                // Phosphorus folders
-                var phosphorusFolders = [];
-                for (var i = 1; i <= 6; i++) {
-                    phosphorusFolders.push("Phosphorus" + i);
-                }
+                        // Phosphorus folders
+                        var phosphorusFolders = [];
+                        for (var i = 1; i <= 6; i++) {
+                            phosphorusFolders.push("Phosphorus" + i);
+                        }
 
-                // Add Phosphorus Graph links
-                popupContent += generateGraphLinks(phosphorusFolders, encodedLakeName, "Phosphorus Graph");
+                        // Add Phosphorus Graph links
+                        return generateGraphLinks(phosphorusFolders, encodedLakeName, "Phosphorus Graph");
+                    })
+                    .then(phosphorusLinks => {
+                        popupContent += phosphorusLinks;
 
-                layer.bindPopup(popupContent);
+                        layer.bindPopup(popupContent);
+                    })
+                    .catch(error => {
+                        console.error("Error fetching graph links:", error);
+                    });
             }
         }
 
         function generateGraphLinks(folders, encodedLakeName, graphType) {
-            var graphLinks = "";
             var promises = [];
 
             for (var i = 0; i < folders.length; i++) {
@@ -97,19 +108,20 @@
                         .then(response => {
                             if (response.ok) {
                                 // File exists in the current folder
-                                graphLinks += '<a href="' + graphLink + '" target="_blank">' + graphType + ' ' + (i + 1) + '</a> ';
+                                return '<a href="' + graphLink + '" target="_blank">' + graphType + ' ' + (i + 1) + '</a> ';
+                            } else {
+                                // File does not exist
+                                return '';
                             }
                         })
                 );
             }
 
             return Promise.all(promises)
-                .then(() => {
-                    // If no graph was found, display a message
-                    if (graphLinks === "") {
-                        graphLinks = '<p>No ' + graphType.toLowerCase() + ' available</p>';
-                    }
-                    return graphLinks;
+                .then(links => links.join(''))
+                .catch(error => {
+                    console.error("Error generating graph links:", error);
+                    return '';
                 });
         }
 
@@ -122,7 +134,6 @@
 </body>
 
 </html>
-
 
 
 
