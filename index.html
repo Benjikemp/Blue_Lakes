@@ -59,32 +59,18 @@
 
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
-                // Check for the existence of temperature graphs asynchronously
-                checkTemperatureGraph("Temp/Temp1", encodedLakeName, popupContent, "Temperature Graph 1");
-                checkTemperatureGraph("Temp/Temp2", encodedLakeName, popupContent, "Temperature Graph 2");
-                checkTemperatureGraph("Temp/Temp3", encodedLakeName, popupContent, "Temperature Graph 3");
+                // Check for the existence of temperature graphs
+                checkGraph("Temp/Temp1", encodedLakeName, popupContent, "Temperature Graph 1");
+                checkGraph("Temp/Temp2", encodedLakeName, popupContent, "Temperature Graph 2");
+                checkGraph("Temp/Temp3", encodedLakeName, popupContent, "Temperature Graph 3");
 
                 layer.bindPopup(popupContent);
             }
         }
 
-        async function checkTemperatureGraph(folder, encodedLakeName, popupContent, graphTitle) {
+        function checkGraph(folder, encodedLakeName, popupContent, graphTitle) {
             var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + "_temperature_graph.jpg";
-
-            try {
-                const response = await fetch(link, { method: 'HEAD' });
-                if (response.ok) {
-                    // File exists
-                    popupContent += '<a href="' + link + '" target="_blank">' + graphTitle + '</a>  ';
-                } else {
-                    // File doesn't exist
-                    popupContent += '<p>No ' + graphTitle.toLowerCase() + ' available</p>';
-                }
-            } catch (error) {
-                // Handle errors
-                console.error("Error checking temperature graph:", error);
-                popupContent += '<p>Error checking ' + graphTitle.toLowerCase() + '</p>';
-            }
+            popupContent += '<a href="' + link + '" target="_blank">' + graphTitle + '</a><br>';
         }
 
         var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
