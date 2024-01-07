@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Blue Lakes Mapping</title>
     <style>
@@ -9,29 +10,35 @@
             text-align: center;
             background-color: #ffffff;
         }
+
         #container {
             padding: 10px;
             background-color: #ffffff;
             display: inline-block;
         }
+
         h1 {
             margin: 0;
         }
+
         #logo {
             display: block;
             margin: 0 auto;
             width: 25%;
         }
+
         #map {
             height: 400px;
             margin: 10px auto;
         }
     </style>
 </head>
+
 <body>
     <div id="container">
         <h1>Blue Lakes Mapping</h1>
-        <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
+        <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png"
+            alt="Blue Lakes Logo">
         <div id="map"></div>
     </div>
     <script src="leaflet/leaflet.js"></script>
@@ -49,45 +56,7 @@
                         popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] + "<br>";
                     }
                 }
-
-                var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
-
-                // Temperature folders
-                var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3"];
-
-                // Check if the file exists in Temperature folders
-                addGraphLink("Temperature Graphs", temperatureFolders, "_temperature_graph.jpg", encodedLakeName);
-
-                // Phosphorus folders
-                var phosphorusFolders = ["Phosphorus_Jan_2024/Phosphorus1", "Phosphorus_Jan_2024/Phosphorus2", "Phosphorus_Jan_2024/Phosphorus3"];
-                addGraphLink("Phosphorus Graphs", phosphorusFolders, "_phosphorus_graph.jpg", encodedLakeName);
-
-                // Dissolved oxygen folders
-                var doFolders = ["DO/DO1", "DO/DO2"];
-                addGraphLink("Dissolved Oxygen Graphs", doFolders, "_dissolved_oxygen_graph.jpg", encodedLakeName);
-
                 layer.bindPopup(popupContent);
-            }
-        }
-
-        function addGraphLink(title, folders, suffix, encodedLakeName) {
-            var link = null;
-            for (var i = 0; i < folders.length; i++) {
-                link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" + encodedLakeName + suffix;
-                var request = new XMLHttpRequest();
-                request.open('HEAD', link, false);
-                request.send();
-
-                if (request.status !== 404) {
-                    // File exists in the current folder
-                    popupContent += '<a href="' + link + '" target="_blank">' + title + '</a>  ';
-                    break;
-                }
-            }
-
-            // If no graph was found, you can display a message
-            if (request.status === 404) {
-                popupContent += '<p>No ' + title.toLowerCase() + ' available</p>';
             }
         }
 
@@ -98,10 +67,8 @@
         geojsonLayer.addTo(map);
     </script>
 </body>
+
 </html>
-
-
-
 
 
 
