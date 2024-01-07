@@ -59,34 +59,27 @@
 
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
-                // Temperature folders
-                var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3"];
-
-                // Check if the file exists in Temperature folders
-                addGraphLink("Temperature Graphs", temperatureFolders, "_temperature_graph.jpg", encodedLakeName);
+                // Check for the existence of temperature graphs
+                checkTemperatureGraph("Temp/Temp1", encodedLakeName, popupContent, "Temperature Graph 1");
+                checkTemperatureGraph("Temp/Temp2", encodedLakeName, popupContent, "Temperature Graph 2");
+                checkTemperatureGraph("Temp/Temp3", encodedLakeName, popupContent, "Temperature Graph 3");
 
                 layer.bindPopup(popupContent);
             }
         }
 
-        function addGraphLink(title, folders, suffix, encodedLakeName) {
-            var link = null;
-            for (var i = 0; i < folders.length; i++) {
-                link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" + encodedLakeName + suffix;
-                var request = new XMLHttpRequest();
-                request.open('HEAD', link, false);
-                request.send();
+        function checkTemperatureGraph(folder, encodedLakeName, popupContent, graphTitle) {
+            var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + "_temperature_graph.jpg";
+            var request = new XMLHttpRequest();
+            request.open('HEAD', link, false);
+            request.send();
 
-                if (request.status !== 404) {
-                    // File exists in the current folder
-                    popupContent += '<a href="' + link + '" target="_blank">' + title + '</a>  ';
-                    break;
-                }
-            }
-
-            // If no graph was found, you can display a message
-            if (request.status === 404) {
-                popupContent += '<p>No ' + title.toLowerCase() + ' available</p>';
+            if (request.status !== 404) {
+                // File exists
+                popupContent += '<a href="' + link + '" target="_blank">' + graphTitle + '</a>  ';
+            } else {
+                // File doesn't exist
+                popupContent += '<p>No ' + graphTitle.toLowerCase() + ' available</p>';
             }
         }
 
@@ -99,7 +92,6 @@
 </body>
 
 </html>
-
 
 
 
