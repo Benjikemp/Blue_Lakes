@@ -47,40 +47,47 @@
 
                 // Temperature folders
                 var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3", "Temp/Temp4", "Temp/Temp5", "Temp/Temp6"];
-                addGraphLink("Temperature Graphs", temperatureFolders, "_temperature_graph.jpg", encodedLakeName, layer);
+                var temperaturePromise = addGraphLink("Temperature Graphs", temperatureFolders, "_temperature_graph.jpg", encodedLakeName);
 
                 // Phosphorus folders
                 var phosphorusFolders = ["Phosphorus_Jan_2024/Phosphorus1", "Phosphorus_Jan_2024/Phosphorus2", "Phosphorus_Jan_2024/Phosphorus3", "Phosphorus_Jan_2024/Phosphorus4", "Phosphorus_Jan_2024/Phosphorus5", "Phosphorus_Jan_2024/Phosphorus6"];
-                addGraphLink("Phosphorus Graphs", phosphorusFolders, "_phosphorus_graph.jpg", encodedLakeName, layer);
+                var phosphorusPromise = addGraphLink("Phosphorus Graphs", phosphorusFolders, "_phosphorus_graph.jpg", encodedLakeName);
 
                 // Dissolved oxygen folders
                 var doFolders = ["DO/DO1", "DO/DO2", "DO/DO3", "DO/DO4", "DO/DO5", "DO/DO6"];
-                addGraphLink("Dissolved Oxygen Graphs", doFolders, "_dissolved_oxygen_graph.jpg", encodedLakeName, layer);
+                var doPromise = addGraphLink("Dissolved Oxygen Graphs", doFolders, "_dissolved_oxygen_graph.jpg", encodedLakeName);
+
+                Promise.all([temperaturePromise, phosphorusPromise, doPromise])
+                    .then((popupContent) => {
+                        layer.bindPopup(popupContent.join(''));
+                    })
+                    .catch((error) => {
+                        console.error("Error setting popup content:", error);
+                    });
             }
         }
 
-        function addGraphLink(title, folders, suffix, encodedLakeName, layer) {
+        async function addGraphLink(title, folders, suffix, encodedLakeName) {
             var popupContent = "<h3>Feature Attributes</h3>";
-            
-            folders.forEach(async function(folder) {
-                var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + suffix;
+
+            for (var i = 0; i < folders.length; i++) {
+                var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" + encodedLakeName + suffix;
 
                 try {
                     const response = await fetch(link);
                     if (response.ok) {
                         // File exists in the current folder
                         popupContent += '<a href="' + link + '" target="_blank">' + title + '</a>  ';
-                        layer.bindPopup(popupContent);
-                        return;
+                        return popupContent;
                     }
                 } catch (error) {
                     console.error("Error checking file existence:", error);
                 }
-            });
+            }
 
             // If no graph was found, you can display a message
             popupContent += '<p>No ' + title.toLowerCase() + ' available</p>';
-            layer.bindPopup(popupContent);
+            return popupContent;
         }
 
         var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
@@ -91,6 +98,7 @@
     </script>
 </body>
 </html>
+
 
 
 
