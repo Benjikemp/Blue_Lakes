@@ -43,42 +43,63 @@
 
         function onEachFeature(feature, layer) {
             if (feature.properties) {
+                var popupContent = "<h3>Feature Attributes</h3>";
+                for (var property in feature.properties) {
+                    if (feature.properties.hasOwnProperty(property)) {
+                        popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] + "<br>";
+                    }
+                }
+
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
                 // Temperature folders
-                var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3", "Temp/Temp4", "Temp/Temp5", "Temp/Temp6"];
-                var temperatureLink = addGraphLink("Temperature Graphs", temperatureFolders, "_temperature_graph.jpg", encodedLakeName);
+                var temperatureFolders = ["Temperature_1", "Temperature_2", "Temperature_3"];
 
-                // Phosphorus folders
-                var phosphorusFolders = ["Phosphorus_Jan_2024/Phosphorus1", "Phosphorus_Jan_2024/Phosphorus2", "Phosphorus_Jan_2024/Phosphorus3", "Phosphorus_Jan_2024/Phosphorus4", "Phosphorus_Jan_2024/Phosphorus5", "Phosphorus_Jan_2024/Phosphorus6"];
-                var phosphorusLink = addGraphLink("Phosphorus Graphs", phosphorusFolders, "_phosphorus_graph.jpg", encodedLakeName);
+                // Check if the file exists in Temperature folders
+                var temperatureLink = null;
+                for (var i = 0; i < temperatureFolders.length; i++) {
+                    temperatureLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + temperatureFolders[i] + "/" + encodedLakeName + "_temperature_graph.jpg";
+                    var temperatureRequest = new XMLHttpRequest();
+                    temperatureRequest.open('HEAD', temperatureLink, false);
+                    temperatureRequest.send();
+
+                    if (temperatureRequest.status !== 404) {
+                        // File exists in the current Temperature folder
+                        popupContent += '<a href="' + temperatureLink + '" target="_blank">Temperature Graph</a>  ';
+                        break;
+                    }
+                }
+
+                // If no temperature graph was found, you can display a message
+                if (temperatureRequest.status === 404) {
+                    popupContent += '<p>No temperature graph available</p>';
+                }
 
                 // Dissolved oxygen folders
-                var doFolders = ["DO/DO1", "DO/DO2", "DO/DO3", "DO/DO4", "DO/DO5", "DO/DO6"];
-                var doLink = addGraphLink("Dissolved Oxygen Graphs", doFolders, "_dissolved_oxygen_graph.jpg", encodedLakeName);
+                var doFolders = ["DO_1", "DO_2"];
 
-                var popupContent = "<h3>Feature Attributes</h3>" + temperatureLink + phosphorusLink + doLink;
+                // Check if the file exists in Dissolved Oxygen folders
+                var doLink = null;
+                for (var j = 0; j < doFolders.length; j++) {
+                    doLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + doFolders[j] + "/" + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                    var doRequest = new XMLHttpRequest();
+                    doRequest.open('HEAD', doLink, false);
+                    doRequest.send();
+
+                    if (doRequest.status !== 404) {
+                        // File exists in the current Dissolved Oxygen folder
+                        popupContent += '<a href="' + doLink + '" target="_blank">Dissolved Oxygen Graph</a>';
+                        break;
+                    }
+                }
+
+                // If no dissolved oxygen graph was found, you can display a message
+                if (doRequest.status === 404) {
+                    popupContent += '<p>No dissolved oxygen graph available</p>';
+                }
 
                 layer.bindPopup(popupContent);
             }
-        }
-
-        function addGraphLink(title, folders, suffix, encodedLakeName) {
-            var link = null;
-            for (var i = 0; i < folders.length; i++) {
-                link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" + encodedLakeName + suffix;
-                var request = new XMLHttpRequest();
-                request.open('HEAD', link, false);
-                request.send();
-
-                if (request.status !== 404) {
-                    // File exists in the current folder
-                    return '<a href="' + link + '" target="_blank">' + title + '</a>  ';
-                }
-            }
-
-            // If no graph was found, you can display a message
-            return '<p>No ' + title.toLowerCase() + ' available</p>';
         }
 
         var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
@@ -88,7 +109,8 @@
         geojsonLayer.addTo(map);
     </script>
 </body>
-</html>
+</
+
 
 
 
