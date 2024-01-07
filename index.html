@@ -41,7 +41,7 @@
         var map = L.map('map').setView([0, 0], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        function onEachFeature(feature, layer) {
+        async function onEachFeature(feature, layer) {
             if (feature.properties) {
                 var popupContent = "<h3>Feature Attributes</h3>";
                 for (var property in feature.properties) {
@@ -54,39 +54,37 @@
 
                 // Temperature folders
                 var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3", "Temp/Temp4", "Temp/Temp5", "Temp/Temp6"];
-                addGraphLink("Temperature Graphs", temperatureFolders, "_temperature_graph.jpg");
+                await addGraphLink("Temperature Graphs", temperatureFolders, "_temperature_graph.jpg");
 
                 // Phosphorus folders
                 var phosphorusFolders = ["Phosphorus_Jan_2024/Phosphorus1", "Phosphorus_Jan_2024/Phosphorus2", "Phosphorus_Jan_2024/Phosphorus3", "Phosphorus_Jan_2024/Phosphorus4", "Phosphorus_Jan_2024/Phosphorus5", "Phosphorus_Jan_2024/Phosphorus6"];
-                addGraphLink("Phosphorus Graphs", phosphorusFolders, "_phosphorus_graph.jpg");
+                await addGraphLink("Phosphorus Graphs", phosphorusFolders, "_phosphorus_graph.jpg");
 
                 // Dissolved oxygen folders
                 var doFolders = ["DO/DO1", "DO/DO2", "DO/DO3", "DO/DO4", "DO/DO5", "DO/DO6"];
-                addGraphLink("Dissolved Oxygen Graphs", doFolders, "_dissolved_oxygen_graph.jpg");
+                await addGraphLink("Dissolved Oxygen Graphs", doFolders, "_dissolved_oxygen_graph.jpg");
 
                 layer.bindPopup(popupContent);
             }
         }
 
-        function addGraphLink(title, folders, suffix) {
-            var link = null;
+        async function addGraphLink(title, folders, suffix) {
             for (var i = 0; i < folders.length; i++) {
-                link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" + encodedLakeName + suffix;
-                var request = new XMLHttpRequest();
-                request.open('HEAD', link, false);
-                request.send();
-
-                if (request.status !== 404) {
-                    // File exists in the current folder
-                    popupContent += '<a href="' + link + '" target="_blank">' + title + '</a>  ';
-                    break;
+                var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" + encodedLakeName + suffix;
+                try {
+                    const response = await fetch(link);
+                    if (response.ok) {
+                        // File exists in the current folder
+                        popupContent += '<a href="' + link + '" target="_blank">' + title + '</a>  ';
+                        break;
+                    }
+                } catch (error) {
+                    console.error("Error checking file existence:", error);
                 }
             }
 
             // If no graph was found, you can display a message
-            if (request.status === 404) {
-                popupContent += '<p>No ' + title.toLowerCase() + ' available</p>';
-            }
+            popupContent += '<p>No ' + title.toLowerCase() + ' available</p>';
         }
 
         var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
@@ -97,7 +95,6 @@
     </script>
 </body>
 </html>
-
 
 
 
