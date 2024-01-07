@@ -74,7 +74,7 @@
                 var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" + encodedLakeName + suffix;
 
                 try {
-                    const response = await fetch(link);
+                    const response = await fetch(link, { method: 'HEAD' });
                     if (response.ok) {
                         // File exists in the current folder
                         popupContent += '<a href="' + link + '" target="_blank">' + title + '</a>  ';
