@@ -50,13 +50,6 @@
 
         function onEachFeature(feature, layer) {
             if (feature.properties) {
-                var popupContent = "<h3>Feature Attributes</h3>";
-                for (var property in feature.properties) {
-                    if (feature.properties.hasOwnProperty(property)) {
-                        popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] + "<br>";
-                    }
-                }
-
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
                 // Temperature folders
@@ -65,30 +58,32 @@
                 // Add Temperature Graph links
                 generateGraphLinks(temperatureFolders, encodedLakeName, "Temperature Graph")
                     .then(temperatureLinks => {
-                        popupContent += temperatureLinks;
-
                         // Dissolved oxygen folders
                         var doFolders = ["DO1", "DO2", "DO3", "DO4", "DO5", "DO6"];
 
                         // Add Dissolved Oxygen Graph links
-                        return generateGraphLinks(doFolders, encodedLakeName, "Dissolved Oxygen Graph");
-                    })
-                    .then(doLinks => {
-                        popupContent += doLinks;
+                        return generateGraphLinks(doFolders, encodedLakeName, "Dissolved Oxygen Graph")
+                            .then(doLinks => {
+                                // Phosphorus folders
+                                var phosphorusFolders = [];
+                                for (var i = 1; i <= 6; i++) {
+                                    phosphorusFolders.push("Phosphorus" + i);
+                                }
 
-                        // Phosphorus folders
-                        var phosphorusFolders = [];
-                        for (var i = 1; i <= 6; i++) {
-                            phosphorusFolders.push("Phosphorus" + i);
-                        }
-
-                        // Add Phosphorus Graph links
-                        return generateGraphLinks(phosphorusFolders, encodedLakeName, "Phosphorus Graph");
-                    })
-                    .then(phosphorusLinks => {
-                        popupContent += phosphorusLinks;
-
-                        layer.bindPopup(popupContent);
+                                // Add Phosphorus Graph links
+                                return generateGraphLinks(phosphorusFolders, encodedLakeName, "Phosphorus Graph")
+                                    .then(phosphorusLinks => {
+                                        // Generate and bind popup content
+                                        var popupContent = "<h3>Feature Attributes</h3>";
+                                        for (var property in feature.properties) {
+                                            if (feature.properties.hasOwnProperty(property)) {
+                                                popupContent += "<strong>" + property + ":</strong> " + feature.properties[property] + "<br>";
+                                            }
+                                        }
+                                        popupContent += temperatureLinks + doLinks + phosphorusLinks;
+                                        layer.bindPopup(popupContent);
+                                    });
+                            });
                     })
                     .catch(error => {
                         console.error("Error fetching graph links:", error);
@@ -97,25 +92,21 @@
         }
 
         function generateGraphLinks(folders, encodedLakeName, graphType) {
-            var promises = [];
+            var promises = folders.map((folder, i) => {
+                var graphLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" +
+                    encodedLakeName + "_" + folder.toLowerCase() + "_graph.jpg";
 
-            for (var i = 0; i < folders.length; i++) {
-                var graphLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folders[i] + "/" +
-                    encodedLakeName + "_" + folders[i].toLowerCase() + "_graph.jpg";
-
-                promises.push(
-                    fetch(graphLink, { method: 'HEAD' })
-                        .then(response => {
-                            if (response.ok) {
-                                // File exists in the current folder
-                                return '<a href="' + graphLink + '" target="_blank">' + graphType + ' ' + (i + 1) + '</a> ';
-                            } else {
-                                // File does not exist
-                                return '';
-                            }
-                        })
-                );
-            }
+                return fetch(graphLink, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            // File exists in the current folder
+                            return '<a href="' + graphLink + '" target="_blank">' + graphType + ' ' + (i + 1) + '</a> ';
+                        } else {
+                            // File does not exist
+                            return '';
+                        }
+                    });
+            });
 
             return Promise.all(promises)
                 .then(links => links.join(''))
@@ -134,6 +125,7 @@
 </body>
 
 </html>
+
 
 
 
