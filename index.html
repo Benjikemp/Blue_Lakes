@@ -59,18 +59,21 @@
 
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
-                // Check for the existence of temperature graphs
-                checkGraph("Temp/Temp1", encodedLakeName, popupContent, "Temperature Graph 1");
-                checkGraph("Temp/Temp2", encodedLakeName, popupContent, "Temperature Graph 2");
-                checkGraph("Temp/Temp3", encodedLakeName, popupContent, "Temperature Graph 3");
+                // Temperature folders
+                var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3"];
+
+                // Check if the file exists in Temperature folders
+                for (var i = 0; i < temperatureFolders.length; i++) {
+                    var link = constructLink(temperatureFolders[i], encodedLakeName, "_temperature_graph.jpg");
+                    popupContent += '<a href="' + link + '" target="_blank">Temperature Graph ' + (i + 1) + '</a><br>';
+                }
 
                 layer.bindPopup(popupContent);
             }
         }
 
-        function checkGraph(folder, encodedLakeName, popupContent, graphTitle) {
-            var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + "_temperature_graph.jpg";
-            popupContent += '<a href="' + link + '" target="_blank">' + graphTitle + '</a><br>';
+        function constructLink(folder, encodedLakeName, suffix) {
+            return "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + suffix;
         }
 
         var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
