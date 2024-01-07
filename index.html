@@ -55,25 +55,21 @@
                 // Dissolved oxygen folder
                 var doFolder = "DO2ALL";
 
-                // Check if the file exists in the DO2ALL folder
-                addGraphLink("Dissolved Oxygen Graphs", doFolder, "_DO_48.png", encodedLakeName);
+                // Check if the file exists in the Dissolved Oxygen folder
+                var doLink = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + doFolder + "/" + encodedLakeName + "_dissolved_oxygen_graph.jpg";
+                var doRequest = new XMLHttpRequest();
+                doRequest.open('HEAD', doLink, false);
+                doRequest.send();
+
+                // If the graph exists, add the link to the popup
+                if (doRequest.status !== 404) {
+                    popupContent += '<a href="' + doLink + '" target="_blank">Dissolved Oxygen Graph</a>';
+                } else {
+                    // If no dissolved oxygen graph was found, you can display a message
+                    popupContent += '<p>No dissolved oxygen graph available</p>';
+                }
 
                 layer.bindPopup(popupContent);
-            }
-        }
-
-        function addGraphLink(title, folder, suffix, encodedLakeName) {
-            var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + suffix;
-            var request = new XMLHttpRequest();
-            request.open('HEAD', link, false);
-            request.send();
-
-            if (request.status !== 404) {
-                // File exists in the DO2ALL folder
-                popupContent += '<a href="' + link + '" target="_blank">' + title + '</a>  ';
-            } else {
-                // If no graph was found, you can display a message
-                popupContent += '<p>No ' + title.toLowerCase() + ' available</p>';
             }
         }
 
@@ -85,8 +81,6 @@
     </script>
 </body>
 </html>
-
-
 
 
 
