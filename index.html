@@ -53,15 +53,17 @@
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
                 // Temperature folders
-                var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3", "Temp/Temp4", "Temp/Temp5", "Temp/Temp6"];
+                var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3"];
+
+                // Check if the file exists in Temperature folders
                 addGraphLink("Temperature Graphs", temperatureFolders, "_temperature_graph.jpg", encodedLakeName);
 
                 // Phosphorus folders
-                var phosphorusFolders = ["Phosphorus_Jan_2024/Phosphorus1", "Phosphorus_Jan_2024/Phosphorus2", "Phosphorus_Jan_2024/Phosphorus3", "Phosphorus_Jan_2024/Phosphorus4", "Phosphorus_Jan_2024/Phosphorus5", "Phosphorus_Jan_2024/Phosphorus6"];
+                var phosphorusFolders = ["Phosphorus_Jan_2024/Phosphorus1", "Phosphorus_Jan_2024/Phosphorus2", "Phosphorus_Jan_2024/Phosphorus3"];
                 addGraphLink("Phosphorus Graphs", phosphorusFolders, "_phosphorus_graph.jpg", encodedLakeName);
 
                 // Dissolved oxygen folders
-                var doFolders = ["DO/DO1", "DO/DO2", "DO/DO3", "DO/DO4", "DO/DO5", "DO/DO6"];
+                var doFolders = ["DO/DO1", "DO/DO2"];
                 addGraphLink("Dissolved Oxygen Graphs", doFolders, "_dissolved_oxygen_graph.jpg", encodedLakeName);
 
                 layer.bindPopup(popupContent);
@@ -97,6 +99,7 @@
     </script>
 </body>
 </html>
+
 
 
 
