@@ -59,7 +59,7 @@
 
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
-                // Check for the existence of temperature graphs
+                // Check for the existence of temperature graphs asynchronously
                 checkTemperatureGraph("Temp/Temp1", encodedLakeName, popupContent, "Temperature Graph 1");
                 checkTemperatureGraph("Temp/Temp2", encodedLakeName, popupContent, "Temperature Graph 2");
                 checkTemperatureGraph("Temp/Temp3", encodedLakeName, popupContent, "Temperature Graph 3");
@@ -68,18 +68,22 @@
             }
         }
 
-        function checkTemperatureGraph(folder, encodedLakeName, popupContent, graphTitle) {
+        async function checkTemperatureGraph(folder, encodedLakeName, popupContent, graphTitle) {
             var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + "_temperature_graph.jpg";
-            var request = new XMLHttpRequest();
-            request.open('HEAD', link, false);
-            request.send();
 
-            if (request.status !== 404) {
-                // File exists
-                popupContent += '<a href="' + link + '" target="_blank">' + graphTitle + '</a>  ';
-            } else {
-                // File doesn't exist
-                popupContent += '<p>No ' + graphTitle.toLowerCase() + ' available</p>';
+            try {
+                const response = await fetch(link, { method: 'HEAD' });
+                if (response.ok) {
+                    // File exists
+                    popupContent += '<a href="' + link + '" target="_blank">' + graphTitle + '</a>  ';
+                } else {
+                    // File doesn't exist
+                    popupContent += '<p>No ' + graphTitle.toLowerCase() + ' available</p>';
+                }
+            } catch (error) {
+                // Handle errors
+                console.error("Error checking temperature graph:", error);
+                popupContent += '<p>Error checking ' + graphTitle.toLowerCase() + '</p>';
             }
         }
 
@@ -92,6 +96,7 @@
 </body>
 
 </html>
+
 
 
 
