@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Blue Lakes Mapping</title>
     <style>
@@ -10,35 +9,29 @@
             text-align: center;
             background-color: #ffffff;
         }
-
         #container {
             padding: 10px;
             background-color: #ffffff;
             display: inline-block;
         }
-
         h1 {
             margin: 0;
         }
-
         #logo {
             display: block;
             margin: 0 auto;
             width: 25%;
         }
-
         #map {
             height: 400px;
             margin: 10px auto;
         }
     </style>
 </head>
-
 <body>
     <div id="container">
         <h1>Blue Lakes Mapping</h1>
-        <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png"
-            alt="Blue Lakes Logo">
+        <img id="logo" src="https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_Logo.png" alt="Blue Lakes Logo">
         <div id="map"></div>
     </div>
     <script src="leaflet/leaflet.js"></script>
@@ -59,21 +52,29 @@
 
                 var encodedLakeName = encodeURIComponent(feature.properties.OFFICIAL_NAME_LABEL);
 
-                // Temperature folders
-                var temperatureFolders = ["Temp/Temp1", "Temp/Temp2", "Temp/Temp3"];
+                // Temperature folder
+                var doFolder = "DO2ALL";
 
-                // Check if the file exists in Temperature folders
-                for (var i = 0; i < temperatureFolders.length; i++) {
-                    var link = constructLink(temperatureFolders[i], encodedLakeName, "_temperature_graph.jpg");
-                    popupContent += '<a href="' + link + '" target="_blank">Temperature Graph ' + (i + 1) + '</a><br>';
-                }
+                // Check if the file exists in the DO2ALL folder
+                addGraphLink("Dissolved Oxygen Graphs", doFolder, "_DO_48.png", encodedLakeName);
 
                 layer.bindPopup(popupContent);
             }
         }
 
-        function constructLink(folder, encodedLakeName, suffix) {
-            return "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + suffix;
+        function addGraphLink(title, folder, suffix, encodedLakeName) {
+            var link = "https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/" + folder + "/" + encodedLakeName + suffix;
+            var request = new XMLHttpRequest();
+            request.open('HEAD', link, false);
+            request.send();
+
+            if (request.status !== 404) {
+                // File exists in the DO2ALL folder
+                popupContent += '<a href="' + link + '" target="_blank">' + title + '</a>  ';
+            } else {
+                // If no graph was found, you can display a message
+                popupContent += '<p>No ' + title.toLowerCase() + ' available</p>';
+            }
         }
 
         var geojsonLayer = new L.GeoJSON.AJAX("https://raw.githubusercontent.com/Benjikemp/Blue_Lakes/main/Blue_Lakes_All.geojson", {
@@ -83,10 +84,7 @@
         geojsonLayer.addTo(map);
     </script>
 </body>
-
 </html>
-
-
 
 
 
